@@ -1,4 +1,4 @@
-import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
+import mongoose, { Schema, model, type InferSchemaType, type Model } from "mongoose";
 import { PRODUCT_STATUSES } from "../lib/statusMachine.js";
 
 /**
@@ -140,5 +140,5 @@ export type ProductMetadataDocument = InferSchemaType<typeof productMetadataSche
 };
 
 export const ProductMetadataModel: Model<ProductMetadataDocument> =
-  (models.ProductMetadata as Model<ProductMetadataDocument>) ??
+  (mongoose.models.ProductMetadata as Model<ProductMetadataDocument>) ??
   model<ProductMetadataDocument>("ProductMetadata", productMetadataSchema);

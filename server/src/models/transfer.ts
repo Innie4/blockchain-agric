@@ -1,4 +1,4 @@
-import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
+import mongoose, { Schema, model, type InferSchemaType, type Model } from "mongoose";
 
 /**
  * Transfer states. A transfer is recorded as `PREPARED` before the participant
@@ -55,5 +55,5 @@ transferSchema.index({ transactionSignature: 1 });
 export type TransferDocument = InferSchemaType<typeof transferSchema> & { _id: unknown };
 
 export const TransferModel: Model<TransferDocument> =
-  (models.Transfer as Model<TransferDocument>) ??
+  (mongoose.models.Transfer as Model<TransferDocument>) ??
   model<TransferDocument>("Transfer", transferSchema);

@@ -1,4 +1,4 @@
-import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
+import mongoose, { Schema, model, type InferSchemaType, type Model } from "mongoose";
 
 export const VERIFICATION_RESULTS = [
   "VERIFIED",
@@ -65,5 +65,5 @@ export type VerificationEventDocument = InferSchemaType<typeof verificationEvent
 };
 
 export const VerificationEventModel: Model<VerificationEventDocument> =
-  (models.VerificationEvent as Model<VerificationEventDocument>) ??
+  (mongoose.models.VerificationEvent as Model<VerificationEventDocument>) ??
   model<VerificationEventDocument>("VerificationEvent", verificationEventSchema);

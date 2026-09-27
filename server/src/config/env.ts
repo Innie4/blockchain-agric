@@ -1,15 +1,33 @@
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { z } from "zod";
 
 /**
  * Environment loading for the API. Values are read from the process
- * environment first and from the repository `.env` files as a fallback, so the
- * documented `npm run dev` flow works without a separate export step.
+ * environment first and from a `.env` file as a fallback, so the documented
+ * `npm run dev` flow works without a separate export step.
+ *
+ * The file is found by walking up from the working directory rather than at a
+ * fixed relative path. `npm run dev --workspace @agri-trace/server` runs with the
+ * working directory set to `server/`, while running the binary directly from the
+ * repository root leaves it at the root, so a single hard-coded path is right in
+ * only one of those cases. The first `.env` found on the way up wins; a value
+ * already in the environment is never overwritten.
  */
+function candidateEnvFiles(): string[] {
+  const files: string[] = [];
+  let directory = process.cwd();
+  for (let depth = 0; depth < 4; depth += 1) {
+    files.push(resolve(directory, ".env"));
+    const parent = dirname(directory);
+    if (parent === directory) break;
+    directory = parent;
+  }
+  return files;
+}
+
 function loadDotEnv(): void {
-  const files = [resolve(process.cwd(), ".env"), resolve(process.cwd(), "../../.env")];
-  for (const file of files) {
+  for (const file of candidateEnvFiles()) {
     try {
       const raw = readFileSync(file, "utf8");
       for (const line of raw.split(/\r?\n/)) {
@@ -29,6 +47,7 @@ function loadDotEnv(): void {
           process.env[key] = value;
         }
       }
+      return;
     } catch {
       // A missing file is the normal case in CI and production.
     }
@@ -42,6 +61,42 @@ const booleanish = z
   .transform((value) =>
     typeof value === "boolean" ? value : ["1", "true", "yes", "on"].includes(value.toLowerCase())
   );
+
+/**
+ * `TRUST_PROXY` is not a plain boolean, so it cannot use `booleanish`.
+ *
+ * Express accepts `true`, `false`, a number of proxy hops, or an address or
+ * subnet. Reading it as a boolean would be wrong in both directions: the string
+ * `"false"` reaches Express as a value it tries to parse as an address and
+ * throws on, so the process cannot start at all; and a genuine address such as
+ * `10.0.0.0/8` would be quietly coerced to `false`, which disables proxy trust
+ * and makes every request look like it came from the proxy. That is not a
+ * cosmetic setting: client addresses feed the rate limiter and the audit trail.
+ *
+ * So the words are recognised, a bare integer is read as a hop count, and
+ * anything else is passed through for Express to validate as an address.
+ */
+const trustProxy = z
+  .union([z.boolean(), z.number(), z.string()])
+  .optional()
+  .transform((value, context) => {
+    if (value === undefined) return undefined;
+    if (typeof value === "boolean") return value;
+    const text = String(value).trim();
+    const lowered = text.toLowerCase();
+    if (["true", "yes", "on"].includes(lowered)) return true;
+    if (["false", "no", "off"].includes(lowered)) return false;
+    if (/^\d+$/.test(text)) return Number.parseInt(text, 10);
+    if (text.length === 0) return false;
+    // Left for Express to accept or reject as an address, subnet or name.
+    if (/^[a-z0-9:._\-/[\]]+$/i.test(text)) return text;
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      message:
+        'must be "true", "false", a number of proxy hops, or an address or subnet such as 10.0.0.0/8',
+    });
+    return z.NEVER;
+  });
 
 const schema = z
   .object({
@@ -73,7 +128,7 @@ const schema = z
     COOKIE_DOMAIN: z.string().optional(),
     COOKIE_SECURE: booleanish.default(false),
     COOKIE_SAME_SITE: z.enum(["lax", "strict", "none"]).default("lax"),
-    TRUST_PROXY: z.union([z.string(), z.boolean()]).optional(),
+    TRUST_PROXY: trustProxy,
 
     UPLOAD_MAX_FILE_BYTES: z.coerce.number().int().min(1024).max(50 * 1024 * 1024).default(5 * 1024 * 1024),
     UPLOAD_MAX_FILES_PER_REQUEST: z.coerce.number().int().min(1).max(50).default(10),
@@ -105,6 +160,20 @@ const schema = z
   });
 
 export type Env = z.infer<typeof schema>;
+
+/**
+ * Validates a candidate environment.
+ *
+ * Exported so the schema can be tested directly. `loadEnv` is a module-level
+ * singleton evaluated on import, which means a test cannot vary the input; a
+ * bug in the schema therefore reaches a running process rather than a failing
+ * test. Every value the process can be started with is decided here.
+ */
+export function parseEnvironment(
+  input: Record<string, string | undefined>
+): ReturnType<typeof schema.safeParse> {
+  return schema.safeParse(input);
+}
 
 function describeIssues(error: z.ZodError): string {
   return error.issues

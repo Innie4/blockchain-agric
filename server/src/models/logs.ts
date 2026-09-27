@@ -1,4 +1,4 @@
-import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
+import mongoose, { Schema, model, type InferSchemaType, type Model } from "mongoose";
 
 const supportingFileSchema = new Schema(
   {
@@ -43,7 +43,7 @@ export type CertificateDocument = InferSchemaType<typeof certificateSchema> & {
 };
 
 export const CertificateModel: Model<CertificateDocument> =
-  (models.Certificate as Model<CertificateDocument>) ??
+  (mongoose.models.Certificate as Model<CertificateDocument>) ??
   model<CertificateDocument>("Certificate", certificateSchema);
 
 /**
@@ -84,7 +84,7 @@ export type ProcessingLogDocument = InferSchemaType<typeof processingLogSchema> 
 };
 
 export const ProcessingLogModel: Model<ProcessingLogDocument> =
-  (models.ProcessingLog as Model<ProcessingLogDocument>) ??
+  (mongoose.models.ProcessingLog as Model<ProcessingLogDocument>) ??
   model<ProcessingLogDocument>("ProcessingLog", processingLogSchema);
 
 /**
@@ -129,5 +129,5 @@ export type TransportLogDocument = InferSchemaType<typeof transportLogSchema> & 
 };
 
 export const TransportLogModel: Model<TransportLogDocument> =
-  (models.TransportLog as Model<TransportLogDocument>) ??
+  (mongoose.models.TransportLog as Model<TransportLogDocument>) ??
   model<TransportLogDocument>("TransportLog", transportLogSchema);

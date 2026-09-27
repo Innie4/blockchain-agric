@@ -1,4 +1,4 @@
-import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
+import mongoose, { Schema, model, type InferSchemaType, type Model } from "mongoose";
 import {
   PARTICIPANT_ROLE_VALUES,
   type ParticipantRoleValue,
@@ -58,7 +58,7 @@ userSchema.index({ registrationDate: -1 });
 export type UserDocument = InferSchemaType<typeof userSchema> & { _id: unknown };
 
 export const UserModel: Model<UserDocument> =
-  (models.User as Model<UserDocument>) ??
+  (mongoose.models.User as Model<UserDocument>) ??
   model<UserDocument>("User", userSchema);
 
 export function toParticipantRole(value: string): ParticipantRoleValue {

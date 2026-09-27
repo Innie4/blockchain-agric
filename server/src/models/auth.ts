@@ -1,4 +1,4 @@
-import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
+import mongoose, { Schema, model, type InferSchemaType, type Model } from "mongoose";
 
 /**
  * A single-use sign-in challenge. The client signs the `message` with the
@@ -28,7 +28,7 @@ authNonceSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 export type AuthNonceDocument = InferSchemaType<typeof authNonceSchema> & { _id: unknown };
 
 export const AuthNonceModel: Model<AuthNonceDocument> =
-  (models.AuthNonce as Model<AuthNonceDocument>) ??
+  (mongoose.models.AuthNonce as Model<AuthNonceDocument>) ??
   model<AuthNonceDocument>("AuthNonce", authNonceSchema);
 
 /**
@@ -61,7 +61,7 @@ sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 export type SessionDocument = InferSchemaType<typeof sessionSchema> & { _id: unknown };
 
 export const SessionModel: Model<SessionDocument> =
-  (models.Session as Model<SessionDocument>) ??
+  (mongoose.models.Session as Model<SessionDocument>) ??
   model<SessionDocument>("Session", sessionSchema);
 
 /**
@@ -98,7 +98,7 @@ export type IdempotencyKeyDocument = InferSchemaType<typeof idempotencyKeySchema
 };
 
 export const IdempotencyKeyModel: Model<IdempotencyKeyDocument> =
-  (models.IdempotencyKey as Model<IdempotencyKeyDocument>) ??
+  (mongoose.models.IdempotencyKey as Model<IdempotencyKeyDocument>) ??
   model<IdempotencyKeyDocument>("IdempotencyKey", idempotencyKeySchema);
 
 /**
@@ -150,7 +150,7 @@ export type ReconciliationTaskDocument = InferSchemaType<typeof reconciliationTa
 };
 
 export const ReconciliationTaskModel: Model<ReconciliationTaskDocument> =
-  (models.ReconciliationTask as Model<ReconciliationTaskDocument>) ??
+  (mongoose.models.ReconciliationTask as Model<ReconciliationTaskDocument>) ??
   model<ReconciliationTaskDocument>("ReconciliationTask", reconciliationTaskSchema);
 
 /**
@@ -191,7 +191,7 @@ notificationSchema.index({ createdAt: 1 }, { expireAfterSeconds: 777_600 });
 export type NotificationDocument = InferSchemaType<typeof notificationSchema> & { _id: unknown };
 
 export const NotificationModel: Model<NotificationDocument> =
-  (models.Notification as Model<NotificationDocument>) ??
+  (mongoose.models.Notification as Model<NotificationDocument>) ??
   model<NotificationDocument>("Notification", notificationSchema);
 
 /**
@@ -221,5 +221,5 @@ auditLogSchema.index({ action: 1, outcome: 1, createdAt: -1 });
 export type AuditLogDocument = InferSchemaType<typeof auditLogSchema> & { _id: unknown };
 
 export const AuditLogModel: Model<AuditLogDocument> =
-  (models.AuditLog as Model<AuditLogDocument>) ??
+  (mongoose.models.AuditLog as Model<AuditLogDocument>) ??
   model<AuditLogDocument>("AuditLog", auditLogSchema);

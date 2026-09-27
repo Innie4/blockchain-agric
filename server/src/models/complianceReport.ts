@@ -1,4 +1,4 @@
-import { Schema, model, models, type InferSchemaType, type Model } from "mongoose";
+import mongoose, { Schema, model, type InferSchemaType, type Model } from "mongoose";
 import { VERIFICATION_RESULTS } from "./verificationEvent.js";
 import { PRODUCT_STATUSES } from "../lib/statusMachine.js";
 
@@ -86,7 +86,7 @@ export type ComplianceReportDocument = InferSchemaType<typeof complianceReportSc
 };
 
 export const ComplianceReportModel: Model<ComplianceReportDocument> =
-  (models.ComplianceReport as Model<ComplianceReportDocument>) ??
+  (mongoose.models.ComplianceReport as Model<ComplianceReportDocument>) ??
   model<ComplianceReportDocument>("ComplianceReport", complianceReportSchema);
 
 export { VERIFICATION_RESULTS, PRODUCT_STATUSES };

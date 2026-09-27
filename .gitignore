@@ -29,6 +29,7 @@ programs/*/target/sbf-solana-solana/
 coverage/
 .nyc_output/
 tests/e2e/.artifacts/
+tests/e2e/.runtime/
 tests/e2e/playwright-report/
 tests/e2e/test-results/
 playwright-report/
