@@ -1,0 +1,37 @@
+{
+  "name": "agri-trace-supply-chain",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A blockchain-based decentralised ecosystem for transparent agricultural supply chain management",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "workspaces": [
+    "client",
+    "server",
+    "tests/e2e"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @agri-trace/server",
+    "dev:client": "npm run dev --workspace @agri-trace/client",
+    "dev:server": "npm run dev --workspace @agri-trace/server",
+    "build": "npm run build --workspace @agri-trace/server && npm run build --workspace @agri-trace/client",
+    "start": "npm run start --workspace @agri-trace/server",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspace @agri-trace/server",
+    "test:server": "npm run test --workspace @agri-trace/server",
+    "test:unit": "npm run test:unit --workspace @agri-trace/server",
+    "test:integration": "npm run test:integration --workspace @agri-trace/server",
+    "test:client": "npm run test --workspace @agri-trace/client",
+    "test:e2e": "npm run test --workspace @agri-trace/e2e",
+    "anchor:build": "npm run build --prefix programs/agri_trace",
+    "anchor:test": "npm run test --prefix programs/agri_trace",
+    "anchor:deploy:devnet": "npm run deploy:devnet --prefix programs/agri_trace",
+    "reconcile": "npm run reconcile --workspace @agri-trace/server",
+    "audit:env": "node scripts/audit-env.mjs",
+    "audit:markers": "node scripts/audit-markers.mjs"
+  }
+}

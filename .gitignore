@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Rust and Anchor build artefacts. The program target directory is over a
+# gigabyte and is entirely reproducible with `cargo build`.
+target/
+programs/*/target/
+programs/*/target/deploy/
+programs/*/target/idl/
+programs/*/target/types/
+programs/*/target/sbf-solana-solana/
+*.so
+*.dll
+*.pdb
+*.rlib
+
+# Environment. The example is committed deliberately: it is the documented list
+# of every variable the code reads. The real file never is.
+.env
+.env.*
+!.env.example
+
+# Test and coverage output
+coverage/
+.nyc_output/
+tests/e2e/.artifacts/
+tests/e2e/playwright-report/
+tests/e2e/test-results/
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+
+# Solana and Anchor credentials. A keypair must never enter version control, and
+# a stray one here would be enough to move real produce.
+programs/**/tests/keys/
+**/id.json
+*.keypair
+*.pem
+*.p12
+*.pfx
+
+# Logs and temporary files
+*.log
+npm-debug.log*
+yarn-error.log*
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Editor and operating system noise
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

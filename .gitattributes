@@ -1,0 +1,28 @@
+# Normalise line endings in the repository, so a file does not change wholesale
+# when it is edited on a different platform. The project is developed on Windows
+# and its Solana tooling runs on Linux, so without this every file would churn
+# between the two.
+* text=auto eol=lf
+
+# Files that must keep native line endings.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary assets, never diffed or line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.bz2
+*.wasm binary
+*.so binary
+*.dll binary
+
+# Lockfiles and generated manifests are not hand-edited.
+package-lock.json -diff

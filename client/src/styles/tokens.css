@@ -1,0 +1,111 @@
+/*
+ * Design tokens.
+ *
+ * The palette is agricultural and documentary rather than technical: warm
+ * off-white paper, one deep natural green, an earth amber reserved for meaning,
+ * and restrained red, blue and green for state. Nothing glows, nothing gradients,
+ * nothing is pill-shaped. Restraint is the point: this interface has to look
+ * like a record a regulator would be willing to sign.
+ */
+
+:root {
+  /* Surfaces */
+  --surface-page: #fbfaf6;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f3f1ea;
+
+  /* Primary: deep natural green */
+  --color-primary: #1f5137;
+  --color-primary-hover: #17402b;
+  --color-primary-soft: #e7efe9;
+  --color-primary-text: #ffffff;
+
+  /* Earth accent, for status that means something is pending */
+  --color-earth: #9a6b1f;
+  --color-earth-soft: #f6eedc;
+
+  --color-danger: #9b2c2c;
+  --color-danger-soft: #f8e9e9;
+  --color-info: #23566f;
+  --color-info-soft: #e6eef3;
+  --color-success: #2c6b3f;
+  --color-success-soft: #e6f0e8;
+  --color-warning: #8a5a12;
+  --color-warning-soft: #faf0de;
+
+  /* Text */
+  --text-primary: #23261f;
+  --text-secondary: #55594e;
+  --text-muted: #7a7f72;
+  --text-inverse: #ffffff;
+
+  /* Borders */
+  --border-subtle: #e3e0d6;
+  --border-strong: #cfccbe;
+
+  /* Radii: restrained, never pill-shaped */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Shadows: barely there */
+  --shadow-sm: 0 1px 2px rgb(35 38 31 / 6%);
+  --shadow-md: 0 2px 6px rgb(35 38 31 / 8%), 0 1px 2px rgb(35 38 31 / 4%);
+
+  /* Spacing, 4px base */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 40px;
+  --space-10: 48px;
+  --space-11: 56px;
+  --space-12: 64px;
+
+  /* Typography */
+  --font-sans:
+    -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial,
+    "Noto Sans", sans-serif;
+  --font-mono:
+    ui-monospace, sfmono-regular, "SF Mono", menlo, consolas, "Liberation Mono", monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+
+  --leading-tight: 1.25;
+  --leading-snug: 1.4;
+  --leading-normal: 1.55;
+  --leading-relaxed: 1.7;
+
+  /* Headings are set tighter than body copy, and slightly smaller, so a page of
+     records does not read as a page of marketing. */
+  --tracking-heading: -0.011em;
+  --tracking-tight: -0.014em;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* Focus is always visible, and always the same. */
+  --focus-ring: 2px solid var(--color-info);
+  --focus-offset: 2px;
+
+  /* Layout */
+  --content-max: 1180px;
+  --measure: 68ch;
+  --header-height: 60px;
+
+  /* Motion: short, and switched off entirely when the reader asks. */
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --easing: cubic-bezier(0.2, 0, 0.2, 1);
+}

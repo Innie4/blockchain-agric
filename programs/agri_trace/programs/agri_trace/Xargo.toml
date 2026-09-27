@@ -1,0 +1,9 @@
+[target.bpfel-unknown-unknown.dependencies.std]
+features = []
+
+[target.sbf-solana-solana.dependencies.std]
+features = []
+
+[target.ledger.dependencies.solana-zk-token-sdk]
+version = "1.2"
+features = ["no-entrypoint"]

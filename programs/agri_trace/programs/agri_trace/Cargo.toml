@@ -1,0 +1,32 @@
+[package]
+name = "agri_trace"
+version = "0.1.0"
+description = "On-chain program for the agricultural supply chain traceability ecosystem"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "agri_trace"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "0.30.1", features = ["init-if-needed"] }
+
+# `anchor-lang`'s macros expand `cfg(target_os = "solana")` and
+# `cfg(feature = "anchor-debug")` style checks into this crate, where cargo's
+# `unexpected_cfgs` lint cannot see that they are declared over in `anchor-lang`.
+# They are listed here so the build is warning-free without muting the lint, which
+# would also hide a genuinely unexpected configuration in this crate.
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = [
+  'cfg(target_os, values("solana"))',
+  'cfg(feature, values("anchor-debug", "custom-heap", "custom-panic", "no-entrypoint", "idl-build"))',
+] }

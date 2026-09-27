@@ -1,0 +1,28 @@
+{
+  "name": "agri-trace-program",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Anchor workspace for the on-chain agricultural supply chain program",
+  "license": "MIT",
+  "scripts": {
+    "build": "anchor build",
+    "test": "anchor test --skip-build",
+    "test:localnet": "anchor test --skip-deploy",
+    "deploy:devnet": "anchor deploy --provider.cluster devnet",
+    "program:keypair": "solana-keygen new --no-bip39-passphrase -o programs/agri_trace/target/deploy/agri_trace-keypair.json --force",
+    "lint:rs": "cargo clippy --manifest-path Cargo.toml --all-targets -- -D warnings",
+    "fmt:rs": "cargo fmt --manifest-path Cargo.toml --all"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.30.1"
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.1.5",
+    "@types/chai": "^4.3.16",
+    "@types/mocha": "^10.0.7",
+    "chai": "^4.4.1",
+    "mocha": "^10.7.3",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^5.6.3"
+  }
+}

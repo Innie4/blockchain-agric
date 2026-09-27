@@ -1,0 +1,7 @@
+{
+  "mongoUri": "mongodb://127.0.0.1:55753/",
+  "mongoDbName": "agri_trace_e2e",
+  "mockRpcUrl": "http://127.0.0.1:8899",
+  "programId": "AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3",
+  "network": "localnet"
+}
