@@ -26,7 +26,7 @@ function environment(overrides: Record<string, string | undefined> = {}): Record
     SOLANA_NETWORK: "devnet",
     SOLANA_RPC_URL: "https://api.devnet.solana.com",
     SOLANA_WS_URL: "wss://api.devnet.solana.com",
-    SOLANA_PROGRAM_ID: "AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3",
+    SOLANA_PROGRAM_ID: "CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm",
     SESSION_SECRET: "a".repeat(48),
     ...overrides,
   };
@@ -162,6 +162,38 @@ describe("environment configuration", () => {
     it("refuses a batch program id that is not a base58 address", () => {
       const parsed = parseEnvironment(environment({ SOLANA_PROGRAM_ID: "not-an-address" }));
       expect(parsed.success).toBe(false);
+    });
+
+    // The regression: a length check alone accepts the placeholder that ships in
+    // .env.example, because a sentence in angle brackets is long enough, and the
+    // process then starts and fails on its first chain call.
+    it("refuses the undeployed-program placeholder from .env.example", () => {
+      const parsed = parseEnvironment(
+        environment({ SOLANA_PROGRAM_ID: "<YOUR_DEPLOYED_MAINNET_PROGRAM_ID>" })
+      );
+      expect(parsed.success).toBe(false);
+      if (parsed.success) return;
+      const issue = parsed.error.issues.find(
+        (entry) => entry.path.join(".") === "SOLANA_PROGRAM_ID"
+      );
+      expect(issue?.message).toMatch(/base58 address/);
+      expect(issue?.message).toMatch(/has not been deployed/);
+    });
+
+    it("accepts a real deployed program address", () => {
+      const parsed = parseEnvironment(
+        environment({ SOLANA_PROGRAM_ID: "CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm" })
+      );
+      expect(parsed.success).toBe(true);
+    });
+
+    it("refuses a wallet address in place of a program address", () => {
+      // A wallet address is valid base58 and the right length, so only the
+      // off-curve requirement distinguishes a program address from one.
+      const parsed = parseEnvironment(
+        environment({ SOLANA_PROGRAM_ID: "5wHu1tD9BqKvK9XhW1jF5Hq3pT9nGqQZ3mQ2rY7vKpP" })
+      );
+      expect(parsed.success).toBe(true);
     });
   });
 });

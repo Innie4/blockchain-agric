@@ -6,10 +6,17 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-agri_trace = "AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3"
+agri_trace = "CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm"
 
 [programs.devnet]
-agri_trace = "AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3"
+agri_trace = "CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm"
+
+# Mainnet. The address is fixed by the program's keypair, so it is the same value
+# on every cluster until the program is upgraded or replaced. The keypair itself
+# lives outside the repository: whoever holds it can upgrade the program, and
+# whoever loses it can never upgrade or close it again.
+[programs.mainnet-beta]
+agri_trace = "CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm"
 
 [registry]
 url = "https://api.apr.dev"

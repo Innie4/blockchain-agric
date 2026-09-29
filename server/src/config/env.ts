@@ -63,6 +63,24 @@ const booleanish = z
   );
 
 /**
+ * The deployed program's address.
+ *
+ * Checked as a base58 address of the right length, not merely as a long string.
+ * A length check alone accepts the placeholder that ships in `.env.example`,
+ * because a sentence in angle brackets is long enough, and the process would
+ * then start and fail on the first chain call with an error that says nothing
+ * about the real cause. A program address is also the one value an operator must
+ * replace before a deployment works, so it is worth failing loudly on.
+ */
+const programId = z
+  .string()
+  .trim()
+  .refine((value) => /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(value), {
+    message:
+      "must be the deployed program's base58 address. If this is still the value from .env.example, the program has not been deployed and its keypair is needed.",
+  });
+
+/**
  * `TRUST_PROXY` is not a plain boolean, so it cannot use `booleanish`.
  *
  * Express accepts `true`, `false`, a number of proxy hops, or an address or
@@ -116,7 +134,7 @@ const schema = z
     SOLANA_NETWORK: z.enum(["devnet", "testnet", "mainnet-beta", "localnet"]).default("devnet"),
     SOLANA_RPC_URL: z.string().url(),
     SOLANA_WS_URL: z.string().url(),
-    SOLANA_PROGRAM_ID: z.string().min(32, "SOLANA_PROGRAM_ID must be the deployed program address"),
+    SOLANA_PROGRAM_ID: programId,
     SOLANA_COMMITMENT: z.enum(["processed", "confirmed", "finalized"]).default("confirmed"),
     SOLANA_PREFETCH_COMMITMENT: z.enum(["none", "processed", "confirmed", "finalized"]).default("confirmed"),
     SOLANA_TX_TIMEOUT_MS: z.coerce.number().int().min(5_000).max(600_000).default(90_000),

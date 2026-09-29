@@ -2,6 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 import {
   API_ORIGIN,
+  API_PORT,
   CLIENT_ORIGIN,
   CLIENT_PORT,
   INFRA_CONTROL_ORIGIN,
@@ -76,7 +77,7 @@ export default defineConfig({
       stderr: "pipe",
     },
     {
-      command: "npm run dev --workspace @agri-trace/client -- --host 127.0.0.1 --port 5173 --strictPort",
+      command: `npm run dev --workspace @agri-trace/client -- --host 127.0.0.1 --port ${CLIENT_PORT} --strictPort`,
       cwd: "../..",
       url: `http://127.0.0.1:${CLIENT_PORT}`,
       timeout: 120_000,
@@ -86,6 +87,10 @@ export default defineConfig({
         VITE_SOLANA_PROGRAM_ID: SOLANA_PROGRAM_ID,
         VITE_SOLANA_RPC_URL: MOCK_RPC_ORIGIN,
         VITE_API_BASE_URL: "/api",
+        // The dev server's proxy target has to follow the API port, or the
+        // browser is proxied to whatever else happens to be on the default one.
+        API_PORT: String(API_PORT),
+        CLIENT_PORT: String(CLIENT_PORT),
       },
       stdout: "pipe",
       stderr: "pipe",

@@ -6,7 +6,7 @@ import { getParticipantAddress, getProductAddress } from "../../src/services/sol
 import { buildRegisterParticipant, buildRegisterProduct, buildTransferOwnership, buildUpdateStatus, buildRecordVerification } from "../../src/services/solana/instructions.js";
 import { parseProgramEvents } from "../../src/services/solana/events.js";
 
-const PROGRAM_ID = new PublicKey("AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3");
+const PROGRAM_ID = new PublicKey("CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm");
 
 /**
  * These tests pin the wire format the backend speaks to the wire format the

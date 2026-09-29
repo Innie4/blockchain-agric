@@ -6,21 +6,36 @@
  * without coordinating at runtime. Nothing here is production configuration:
  * these are the values a developer's machine happens to use, chosen so nothing
  * collides with a real dev server on :4000 or :5173.
+ *
+ * Each port can be overridden with an environment variable. That matters because
+ * the suite starts a real API on the API port, so anything else already holding
+ * it — another project's service, or a dev server left running — stops the suite
+ * from starting with a bare "port already in use" rather than anything to do with
+ * the code under test. The defaults are unchanged.
  */
+function port(variable: string, fallback: number): number {
+  const raw = process.env[variable];
+  if (raw === undefined || raw.trim().length === 0) return fallback;
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isInteger(parsed) || parsed < 1 || parsed > 65_535) {
+    throw new Error(`${variable} must be a port number between 1 and 65535, got "${raw}".`);
+  }
+  return parsed;
+}
 
 /** The on-chain program the suite writes to. Matches `pda.ts`'s fallback id. */
-export const SOLANA_PROGRAM_ID = "AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3";
+export const SOLANA_PROGRAM_ID = "CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm";
 
 /** The client dev server, which also proxies `/api` to the API. */
-export const CLIENT_PORT = 5173;
+export const CLIENT_PORT = port("E2E_CLIENT_PORT", 5173);
 export const CLIENT_ORIGIN = `http://localhost:${CLIENT_PORT}`;
 
 /** The Express API. */
-export const API_PORT = 4000;
+export const API_PORT = port("E2E_API_PORT", 4000);
 export const API_ORIGIN = `http://localhost:${API_PORT}`;
 
 /** The mock Solana JSON-RPC endpoint the API is pointed at. */
-export const MOCK_RPC_PORT = 8899;
+export const MOCK_RPC_PORT = port("E2E_MOCK_RPC_PORT", 8899);
 export const MOCK_RPC_ORIGIN = `http://127.0.0.1:${MOCK_RPC_PORT}`;
 
 /**

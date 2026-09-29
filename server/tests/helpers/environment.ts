@@ -18,7 +18,7 @@ import { CLUSTER_TIME } from "./testEnv.js";
  * so no production module can quietly acquire it.
  */
 
-export const TEST_PROGRAM_ID = new PublicKey("AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3");
+export const TEST_PROGRAM_ID = new PublicKey("CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm");
 
 let mongoServer: MongoMemoryServer | null = null;
 

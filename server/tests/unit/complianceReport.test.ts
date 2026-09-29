@@ -34,7 +34,7 @@ process.env["MONGODB_DB_NAME"] = "agri_trace_test";
 process.env["SOLANA_NETWORK"] = "devnet";
 process.env["SOLANA_RPC_URL"] = "http://127.0.0.1:8899";
 process.env["SOLANA_WS_URL"] = "ws://127.0.0.1:8900";
-process.env["SOLANA_PROGRAM_ID"] = "AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3";
+process.env["SOLANA_PROGRAM_ID"] = "CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm";
 process.env["SESSION_SECRET"] = "unit-test-session-secret-of-sufficient-length";
 process.env["LOG_LEVEL"] = "silent";
 

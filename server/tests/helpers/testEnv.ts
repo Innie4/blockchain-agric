@@ -19,7 +19,7 @@ export const TEST_ENV = {
   SOLANA_NETWORK: "devnet",
   SOLANA_RPC_URL: "http://127.0.0.1:8899",
   SOLANA_WS_URL: "ws://127.0.0.1:8900",
-  SOLANA_PROGRAM_ID: "AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3",
+  SOLANA_PROGRAM_ID: "CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm",
   SOLANA_COMMITMENT: "confirmed",
   SOLANA_PREFETCH_COMMITMENT: "confirmed",
   // The lowest value the schema accepts; a confirmation-timeout test waits this

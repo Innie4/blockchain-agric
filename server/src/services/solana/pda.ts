@@ -13,7 +13,7 @@ export const PARTICIPANT_SEED = "participant";
 
 /** Mirrors `declare_id!` in the program. Overridden by SOLANA_PROGRAM_ID. */
 export const FALLBACK_PROGRAM_ID =
-  "AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3";
+  "CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm";
 
 export function getProductAddress(
   programId: PublicKey,

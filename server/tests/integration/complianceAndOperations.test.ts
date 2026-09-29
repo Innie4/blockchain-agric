@@ -467,7 +467,7 @@ describe("compliance, operations and health", () => {
     expect(
       dataOf<{ status: string; runtime: { solanaProgramId: string } }>(liveness).runtime
         .solanaProgramId
-    ).toBe("AgriTrace418FNVcjry6EMUbiqx5DLTahpw4CKSZgov3");
+    ).toBe("CTKBH9KnbTd8zL4sHNpj4CBPPQcHu2uZk613WpA1ZiDm");
     expect(database.status).toBe(200);
     expect(dataOf<{ reachable: boolean }>(database).reachable).toBe(true);
     expect(blockchain.status).toBe(200);
