@@ -32,6 +32,7 @@ Documentation:
 - [Blockchain](docs/blockchain.md) — the program, the accounts, and the two-phase write flow.
 - [Environment](docs/environment.md) — every variable, and which side may see it.
 - [Testing](docs/testing.md) — what is covered, at what level, and how to run it.
+- [Deployment](docs/deployment.md) — what must exist before the API starts, and the checklist.
 
 ## Requirements
 
