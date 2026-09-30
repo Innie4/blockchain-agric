@@ -6,25 +6,12 @@ import { useToast } from "../../context/ToastContext";
 import { useWalletState } from "../../context/WalletContext";
 import { truncateAddress } from "../../lib/format";
 import { useMenuDismiss } from "../../lib/useMenuDismiss";
-import { isDemoDataEnabled } from "../../demo/mode";
 import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 
 const NO_WALLET_GUIDANCE =
   "No Solana wallet was found in this browser. Phantom, Backpack and Solflare are supported. " +
   "Open the setup page for instructions.";
-
-/**
- * Shown instead, while placeholder data is in use.
- *
- * Asking someone to install a wallet they do not need in order to review the
- * product would be sending them off to do work for a demonstration. Saying
- * plainly that no wallet is needed here is more useful and more honest than
- * repeating an instruction that does not apply.
- */
-const DEMO_WALLET_GUIDANCE =
-  "No wallet is connected, and none is needed: these screens are showing placeholder data, " +
-  "so nothing here is signed and nothing is written to a blockchain.";
 
 /**
  * Connect, show the connected address, and sign out.
@@ -60,19 +47,6 @@ export function WalletButton() {
   }
 
   if (status === "unavailable") {
-    // While placeholder data is in use there is nothing to sign, so the button
-    // offers the wallet setup page as an aside rather than as a requirement.
-    if (isDemoDataEnabled()) {
-      return (
-        <div className="cluster cluster--tight">
-          <span className="badge badge--info" title={DEMO_WALLET_GUIDANCE}>
-            <Icon name="info" size={16} />
-            No wallet needed
-            <span className="visually-hidden">. {DEMO_WALLET_GUIDANCE}</span>
-          </span>
-        </div>
-      );
-    }
     return (
       <div ref={menuRef} className="cluster cluster--tight">
         <Link className="btn btn--primary" to="/connect" title={NO_WALLET_GUIDANCE}>

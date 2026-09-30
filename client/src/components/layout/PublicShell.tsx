@@ -3,7 +3,6 @@ import { Link, NavLink, Outlet } from "react-router-dom";
 import { CLUSTER_LABEL, SOLANA_CLUSTER } from "../../lib/solana";
 import { LoadingState } from "../states/LoadingState";
 import { Icon } from "../ui/Icon";
-import { DemoDataBanner } from "./DemoDataBanner";
 import { WalletButton } from "./WalletButton";
 
 const PUBLIC_LINKS: ReadonlyArray<{ to: string; label: string }> = [
@@ -26,8 +25,6 @@ export function PublicShell({ children }: { children?: ReactNode }) {
         Skip to the main content
       </a>
 
-      <DemoDataBanner />
-
       <header className="app-header">
         <div className="container app-header__inner">
           <Link className="wordmark" to="/">
@@ -38,16 +35,16 @@ export function PublicShell({ children }: { children?: ReactNode }) {
             </span>
           </Link>
 
-          <nav className="app-nav" aria-label="Public">
-            <ul className="app-nav__list">
+          <nav className="app-nav app-nav--inline" aria-label="Public">
+            <ul className="app-nav__list app-nav__list--inline">
               {PUBLIC_LINKS.map((link) => (
-                <li key={link.to}>
+                <li key={link.to} className="app-nav__item">
                   <NavLink className="app-nav__link" to={link.to}>
                     {link.label}
                   </NavLink>
                 </li>
               ))}
-              <li>
+              <li className="app-nav__item">
                 <NavLink className="app-nav__link" to="/app">
                   Participant sign in
                 </NavLink>

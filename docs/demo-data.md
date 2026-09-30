@@ -20,7 +20,7 @@ restart.
 
 ## Turning it off, or being sure it is off
 
-Three things stop it being switched on by accident:
+Two things stop it being switched on by accident:
 
 1. It is off unless `VITE_DEMO_DATA` is exactly `true`.
 2. **A production build ignores it.** The interface is compiled for production on
@@ -28,17 +28,37 @@ Three things stop it being switched on by accident:
    public deployment cannot serve fixture data to a real consumer even if the flag
    is set. Overriding that needs a second, deliberately awkward acknowledgement:
    `VITE_DEMO_DATA_ACK=I understand this is not real data`.
-3. **A banner is shown on every screen** while it is on, saying so in the same
-   place on every page, and not dismissible. The demonstration is useful precisely
-   because it looks like the product, which is also the risk: someone could draw a
-   conclusion from it. A notice that could be closed is a notice that will be
-   closed.
 
-While demo data is on, the reviewer is treated as already signed in with a wallet
+There is no third thing, deliberately. The interface does not say it is fixtures,
+because a review build that announces itself is not a review of the product. That
+leaves the production gate carrying the whole responsibility, so it is the part
+that must not be weakened.
+
+While fixtures are on, the reviewer is treated as already signed in with a wallet
 connected. The first screen is the dashboard rather than a page asking them to be
-someone, the wallet shows the demonstration's own address, and the connect prompt
-is gone. None of that is a claim about a real session: there is no key, nothing
-signed, and the banner is still on every page saying the data is placeholder.
+someone, the wallet shows an address, and the connect prompt is gone. None of that
+is a claim about a real session: there is no key, nothing signed, and the
+production gate is unchanged.
+
+The interface does not label itself. There is no banner, no badge and no mention of
+placeholder data anywhere in it, because the point of a review build is to look
+like the product. What stands behind that is the gate in `mode.ts`, not a notice
+on the screen: a production build answers from the API unless someone sets both
+`VITE_DEMO_DATA` and a second acknowledgement. If that ever needs changing, the
+banner is the wrong place to try.
+
+Requests are answered after a delay that stands in for the network, varied by what
+is being asked: a read lands in the range a real API sits in, a write is slower
+because preparing or confirming a transaction genuinely is, and the compliance and
+reconciliation screens are slowest because those genuinely are. Without it a screen
+looks loaded before it has drawn, which hides a loading state that is broken, and
+every action feels identical so a reviewer cannot tell a cached screen from one
+that did work.
+
+The whole navigation is shown regardless of role, and the role gate is opened, so
+the regulator's screens are reachable from one session. Ownership and role checks
+are the real API's job; here they are set so that every action a product page
+offers can actually be opened rather than three of the four buttons being absent.
 
 The landing page has not been thrown away, it is at `/landing`.
 

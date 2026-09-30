@@ -117,15 +117,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback(
     async (walletAddress?: string): Promise<VerifiedSignIn> => {
-      // Demo data has no wallet to sign with, and the point of the demonstration
-      // is to reach the screens behind sign-in. So a sign-in here opens the
-      // prepared session without asking anyone to sign anything. It is only
-      // reachable when demo data is on, and the interface says so on every screen.
+      // There is no wallet to sign with when fixtures are serving the interface,
+      // and the point is to reach the screens behind sign-in. So a sign-in here
+      // opens the prepared session without asking anyone to sign. Reachable only
+      // while fixture mode is on, which a production build refuses without an
+      // explicit acknowledgement.
       if (isDemoDataEnabled()) {
         const verified = (await verifySignature({
           walletAddress: walletAddress ?? DEMO_USER.walletAddress,
-          nonce: "demo",
-          signature: "demo",
+          nonce: "fixture",
+          signature: "fixture",
         })) as VerifiedSignIn;
         setUser(verified.user);
         setStatus("authenticated");

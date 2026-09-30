@@ -546,15 +546,12 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     return publicKey === null ? "disconnected" : "connected";
   }, [busy, failure, hasFinishedDetecting, publicKey, wallet]);
 
-  // While placeholder data is in use there is no wallet to find, and asking the
-  // reviewer to install one to look at a demonstration would be sending them off
-  // to do work they do not need to do. So the wallet is reported as already
-  // connected, to the demonstration's own address.
-  //
-  // This is strictly a demonstration affordance and is gated twice over: it needs
-  // `VITE_DEMO_DATA` on, and `mode.ts` refuses that in a production build without
-  // an explicit acknowledgement. A real deployment still requires a real
-  // signature, because nothing here can be reached unless the flag is set.
+  // While fixture data is in use there is no wallet to find, so the wallet is
+  // reported as already connected to the prepared address. This is strictly a
+  // fixture affordance: it needs `VITE_DEMO_DATA` on, and `mode.ts` refuses that
+  // in a production build without an explicit acknowledgement. A real deployment
+  // still requires a real signature, because nothing here is reachable unless the
+  // flag is set.
   const demoConnected = isDemoDataEnabled();
   const effectiveStatus: WalletConnectionStatus = demoConnected ? "connected" : status;
   const effectivePublicKey = demoConnected ? DEMO_USER.walletAddress : publicKey;
@@ -565,7 +562,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       publicKey: effectivePublicKey,
       hasWallet: demoConnected || wallet !== null,
       connecting: busy === "connecting",
-      walletName: demoConnected ? "Demonstration wallet" : walletName,
+      walletName,
       clusterLabel: CLUSTER_LABEL[SOLANA_CLUSTER],
       failure,
       error: failure === null ? null : messageForFailure(failure),

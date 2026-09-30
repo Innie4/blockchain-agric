@@ -1,7 +1,7 @@
 import { ApiError, toApiErrorCode } from "./errors";
 import type { ErrorEnvelope, SuccessEnvelope } from "./types";
 import { isDemoDataEnabled } from "../demo/mode";
-import { DemoRouteNotFound, demoRequest } from "../demo/router";
+import { DemoRouteNotFound, demoDownload, demoRequest } from "../demo/router";
 
 /** The readable companion to the `httpOnly` session cookie. */
 export const CSRF_COOKIE_NAME = "agri_csrf";
@@ -103,11 +103,16 @@ export class ApiClient {
   }
 
   /**
-   * Answers one call from the placeholder dataset.
+   * Answers one call from the placeholder dataset, after a delay that stands in
+   * for the network.
    *
-   * The delay is deliberate and short: an instant answer would make a screen look
-   * loaded before it had finished rendering, which is the sort of thing that hides
-   * a loading state that is broken.
+   * The delay is deliberate. An instant answer makes a screen look loaded before it
+   * has finished rendering, which hides a loading state that is broken; and a flat
+   * one makes every action feel identical, so a reviewer cannot tell a cached
+   * screen from one that did real work. So the time varies by what the call is:
+   * reads land in the range a real API sits in, a write is slower because it
+   * would be preparing or confirming a transaction, and the compliance and
+   * reconciliation screens are slowest because those genuinely are.
    *
    * A path with no handler is reported as a real failure rather than as empty
    * data, because a demonstration that quietly shows a blank screen where the
@@ -123,7 +128,7 @@ export class ApiClient {
     if (signal?.aborted) {
       throw new DOMException("The request was cancelled.", "AbortError");
     }
-    await new Promise((resolve) => setTimeout(resolve, 60));
+    await new Promise((resolve) => setTimeout(resolve, simulatedLatencyMs(method, path)));
     if (signal?.aborted) {
       throw new DOMException("The request was cancelled.", "AbortError");
     }
@@ -141,9 +146,9 @@ export class ApiClient {
         // is what a participant would see against the real service.
         throw new ApiError({
           code: "NOT_FOUND",
-          message: `Demo data has nothing for ${method} ${path}. Add a handler so this screen can be reviewed.`,
+          message: `No fixture covers ${method} ${path}. Add one so this screen can be reviewed.`,
           status: 501,
-          requestId: "demo",
+          requestId: "fixtures",
         });
       }
       throw error;
@@ -202,6 +207,15 @@ export class ApiClient {
    */
   async download(path: string, options: DownloadOptions = {}): Promise<Blob> {
     const { method = "GET", query, signal } = options;
+
+    if (isDemoDataEnabled()) {
+      await new Promise((resolve) => setTimeout(resolve, simulatedLatencyMs(method, path)));
+      if (signal?.aborted) {
+        throw new DOMException("The request was cancelled.", "AbortError");
+      }
+      return demoDownload(path, method);
+    }
+
     const headers = new Headers();
     if (!SAFE_METHODS.has(method)) {
       const csrf = readCsrfToken();
@@ -320,6 +334,42 @@ async function readEnvelope<T>(response: Response): Promise<T | undefined> {
   // A response that is not an envelope at all is still handed back, so a plain
   // payload from a future endpoint is not silently dropped.
   return parsed as T;
+}
+
+/**
+ * How long a placeholder call should appear to take, in milliseconds.
+ *
+ * The bands are chosen to look like the real service rather than to be fast. A
+ * read of one record is quicker than a search across many; a write is slower,
+ * because preparing a transaction or waiting for confirmation genuinely is; and
+ * the regulator's screens are slowest, because they aggregate and export.
+ *
+ * There is a small deterministic wobble rather than a random one. A fixed delay
+ * makes a page feel mechanical, and `Math.random` makes a loading state impossible
+ * to reproduce, which is worse when something needs looking at twice.
+ */
+function simulatedLatencyMs(method: HttpMethod, path: string): number {
+  const base = SAFE_METHODS.has(method) ? 220 : 520;
+
+  let extra = 0;
+  if (path.startsWith("/search") || path.startsWith("/dashboard")) extra += 180;
+  if (path.startsWith("/compliance")) extra += 260;
+  if (path.startsWith("/operations")) extra += 300;
+  if (path.startsWith("/products/") && path.includes("/history")) extra += 120;
+
+  // ±12% of the total, so no two identical requests look identical but the
+  // pattern is still steady between reloads.
+  const wobble = ((hashPath(path) % 25) - 12) / 100;
+  return Math.round((base + extra) * (1 + wobble));
+}
+
+/** A small stable hash, used only to pick the wobble above. */
+function hashPath(path: string): number {
+  let value = 0;
+  for (let index = 0; index < path.length; index += 1) {
+    value = (value * 31 + path.charCodeAt(index)) % 100_000;
+  }
+  return value;
 }
 
 /** The shared client. One instance, so one place to change the base URL. */

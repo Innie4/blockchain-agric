@@ -103,6 +103,8 @@
   --content-max: 1180px;
   --measure: 68ch;
   --header-height: 60px;
+  --sidebar-width: 15rem;
+  --transition-base: 180ms;
 
   /* Motion: short, and switched off entirely when the reader asks. */
   --duration-fast: 120ms;

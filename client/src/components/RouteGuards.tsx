@@ -12,6 +12,7 @@ import {
 import { ApiError, messageForError } from "../api/errors";
 import type { Role } from "../api/types";
 import { useAuth } from "../context/AuthContext";
+import { isDemoDataEnabled } from "../demo/mode";
 import { useToast } from "../context/ToastContext";
 import { useWalletState } from "../context/WalletContext";
 import { AppShell } from "./layout/AppShell";
@@ -179,7 +180,10 @@ export function RequireRole({ roles, children }: RequireRoleProps) {
   }
   if (status !== "authenticated") return <UnauthenticatedGate />;
 
-  if (!isRole(...roles)) {
+  // While fixture data is in use the role gate is opened, so every page can be
+  // reviewed from one session. Against the real API the check below still runs
+  // and the server refuses regardless, so this only widens a review build.
+  if (!isDemoDataEnabled() && !isRole(...roles)) {
     return (
       <GuardFrame>
         <ForbiddenState currentRole={user?.role ?? null} allowedRoles={roles} />

@@ -160,7 +160,7 @@ const ROLE_LABEL: Record<string, string> = {
 };
 
 /** Minutes after a batch's registration, so a chain reads in order. */
-function after(registeredAt: string, minutes: number): string {
+export function after(registeredAt: string, minutes: number): string {
   return new Date(new Date(registeredAt).getTime() + minutes * 60_000).toISOString();
 }
 

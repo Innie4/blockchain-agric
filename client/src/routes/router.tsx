@@ -59,10 +59,10 @@ export const router = createBrowserRouter([
     errorElement: ERROR_ELEMENT,
     element: <PublicShell />,
     children: [
-      // While placeholder data is in use the reviewer is treated as already
-      // signed in with a wallet connected, so the first thing they see is the
-      // product rather than a page asking them to be someone. The landing page
-      // stays reachable at /landing, because it is still worth reading.
+      // While fixtures are serving the interface the reviewer is treated as
+      // already signed in with a wallet connected, so the first thing they see is
+      // the product rather than a page asking them to be someone. The landing
+      // page stays reachable at /landing, because it is still worth reading.
       isDemoDataEnabled()
         ? { index: true, element: <Navigate to="/app/dashboard" replace /> }
         : { index: true, element: <LandingPage /> },

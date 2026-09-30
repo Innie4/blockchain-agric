@@ -1,15 +1,18 @@
 /**
- * Whether the interface is running on demo data.
+ * Whether the interface is running on fixture data.
  *
- * Demo mode exists so the whole product can be seen and reviewed without a
- * database, a chain connection or a wallet. It is deliberately awkward to leave on
- * by accident:
+ * This exists so the whole product can be seen and reviewed without a database, a
+ * chain connection or a wallet. It is deliberately awkward to leave on by
+ * accident:
  *
  * - it is off unless `VITE_DEMO_DATA` is exactly `true`;
  * - it refuses to run in a production build, so a real deployment cannot serve
- *   fixture data to a real consumer even if the flag is set;
- * - the interface shows a standing banner whenever it is on, so nobody can mistake
- *   a demonstration for the real registry.
+ *   fixture data to a real consumer even if the flag is set.
+ *
+ * The second point is the only thing standing between a mistake here and a public
+ * site answering a regulator's question with invented batches, so it is the part
+ * that must not be weakened. A build that wants fixtures has to say so in as many
+ * words.
  */
 
 const FLAG = import.meta.env["VITE_DEMO_DATA"];
@@ -26,9 +29,8 @@ function isProductionBuild(): boolean {
 /**
  * Whether requests are answered from fixtures.
  *
- * A production build always answers from the API. A demonstration is worth
- * showing, but not on a public deployment where a consumer would take it for the
- * registry.
+ * A production build always answers from the API. A review build is worth showing,
+ * but not on a public deployment where a consumer would take it for the registry.
  */
 export function isDemoDataEnabled(): boolean {
   if (!requested()) return false;
@@ -45,7 +47,7 @@ function isExplicitlyAllowedInProduction(): boolean {
   return typeof acknowledgement === "string" && acknowledgement === "I understand this is not real data";
 }
 
-/** Why demo mode is off, for the banner and for anyone debugging. */
+/** Why fixtures are off, for anyone debugging a build that is not behaving. */
 export function demoDataStatus(): { enabled: boolean; reason: string } {
   if (!requested()) {
     return { enabled: false, reason: "VITE_DEMO_DATA is not set to true" };
@@ -57,5 +59,5 @@ export function demoDataStatus(): { enabled: boolean; reason: string } {
         "a production build answers from the API; set VITE_DEMO_DATA_ACK to override",
     };
   }
-  return { enabled: true, reason: "serving demo data" };
+  return { enabled: true, reason: "serving fixture data" };
 }

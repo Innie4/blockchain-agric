@@ -1,4 +1,4 @@
-/*
+﻿/*
  * The single global stylesheet. Class names follow a light BEM-ish convention:
  * `block`, `block__element`, `block--modifier`. Nothing here relies on colour
  * alone to carry meaning, and every interactive element has a visible focus
@@ -1670,36 +1670,95 @@ samp,
   align-items: center;
 }
 
-.app-header__nav {
-  width: 100%;
-  order: 3;
+/* ------------------------------------------------------------------ *
+ * Sidebar navigation
+ *
+ * A participant has eleven destinations once signed in, which will not fit in a
+ * header row on a laptop without wrapping or scrolling. The sidebar holds them
+ * all without wrapping, gives each an icon, and keeps the current one
+ * identifiable while scrolling a long page.
+ *
+ * On a narrow screen it is a drawer instead: off the page until the menu button
+ * is pressed, and dismissable by Escape, by a link, or by the button again.
+ * ------------------------------------------------------------------ */
+
+.shell--sidebar {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
-@media (min-width: 60rem) {
-  .app-header__nav {
-    width: auto;
-    order: 0;
-  }
+.shell__body {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: flex-start;
+}
+
+.app-header__nav-toggle {
+  display: inline-flex;
+}
+
+.sidebar {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-start: 0;
+  z-index: 40;
+  width: var(--sidebar-width);
+  overflow-y: auto;
+  border-inline-end: 1px solid var(--border-subtle);
+  background-color: var(--surface-raised);
+  padding: var(--space-4) var(--space-3);
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition:
+    transform var(--transition-base),
+    visibility var(--transition-base);
+}
+
+.sidebar--open {
+  transform: translateX(0);
+  visibility: visible;
 }
 
 .app-nav__list {
   display: flex;
+  flex-direction: column;
   gap: var(--space-1);
-  overflow-x: auto;
-  padding-bottom: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * The public header keeps its links on one line. There are only three of them, so
+ * they fit, and the public pages are meant to feel lighter than the signed-in
+ * area rather than carrying the same frame.
+ */
+.app-nav__list--inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.app-nav__item {
+  margin: 0;
 }
 
 .app-nav__link {
-  display: inline-flex;
+  display: flex;
+  gap: var(--space-3);
   align-items: center;
-  gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
   font-size: var(--text-sm);
   font-weight: var(--weight-medium);
   text-decoration: none;
-  white-space: nowrap;
+}
+
+.app-nav__icon {
+  flex: 0 0 auto;
+  color: var(--text-muted);
 }
 
 .app-nav__link:hover {
@@ -1707,9 +1766,36 @@ samp,
   color: var(--text-primary);
 }
 
+.app-nav__link:hover .app-nav__icon {
+  color: var(--text-secondary);
+}
+
 .app-nav__link[aria-current="page"] {
   background-color: var(--color-primary-soft);
   color: var(--color-primary);
+}
+
+.app-nav__link[aria-current="page"] .app-nav__icon {
+  color: var(--color-primary);
+}
+
+@media (min-width: 60rem) {
+  .sidebar {
+    position: sticky;
+    inset-block-start: 0;
+    height: 100vh;
+    flex: 0 0 var(--sidebar-width);
+    transform: none;
+    visibility: visible;
+  }
+
+  .app-header__nav-toggle {
+    display: none;
+  }
+
+  .shell__main {
+    flex: 1 1 auto;
+  }
 }
 
 .wallet-button__address {
@@ -2076,47 +2162,3 @@ samp,
   }
 }
 
-/* ------------------------------------------------------------------ *
- * The demonstration notice
- *
- * Shown on every screen while placeholder data is in use. Deliberately plain and
- * permanently placed rather than dismissible: a notice that can be closed is a
- * notice that will be closed, and the one thing this must do is stop anyone
- * reading a demonstration as the registry.
- * ------------------------------------------------------------------ */
-.demo-banner {
-  background-color: var(--color-warning-soft);
-  border-bottom: 1px solid var(--color-warning);
-  color: var(--text-primary);
-}
-
-.demo-banner__inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-2) var(--space-3);
-  padding-top: var(--space-2);
-  padding-bottom: var(--space-2);
-  font-size: var(--text-xs);
-  line-height: var(--leading-snug);
-}
-
-.demo-banner__title {
-  font-weight: 600;
-  color: var(--color-warning);
-  white-space: nowrap;
-}
-
-.demo-banner__body {
-  color: var(--text-secondary);
-  flex: 1 1 20rem;
-  min-width: 0;
-}
-
-.demo-banner__body code {
-  font-family: var(--font-mono);
-  font-size: 0.95em;
-  background-color: rgba(138, 90, 18, 0.12);
-  padding: 0 0.25em;
-  border-radius: 2px;
-}
