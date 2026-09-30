@@ -1,5 +1,7 @@
 import { ApiError, toApiErrorCode } from "./errors";
 import type { ErrorEnvelope, SuccessEnvelope } from "./types";
+import { isDemoDataEnabled } from "../demo/mode";
+import { DemoRouteNotFound, demoRequest } from "../demo/router";
 
 /** The readable companion to the `httpOnly` session cookie. */
 export const CSRF_COOKIE_NAME = "agri_csrf";
@@ -100,8 +102,64 @@ export class ApiClient {
     return `${this.baseUrl}${suffix}${separator}${search}`;
   }
 
+  /**
+   * Answers one call from the placeholder dataset.
+   *
+   * The delay is deliberate and short: an instant answer would make a screen look
+   * loaded before it had finished rendering, which is the sort of thing that hides
+   * a loading state that is broken.
+   *
+   * A path with no handler is reported as a real failure rather than as empty
+   * data, because a demonstration that quietly shows a blank screen where the
+   * product would have shown an error is worse than one that fails.
+   */
+  private async fromDemoData<T>(
+    method: HttpMethod,
+    path: string,
+    body: unknown,
+    query: QueryParams | undefined,
+    signal: AbortSignal | undefined
+  ): Promise<T> {
+    if (signal?.aborted) {
+      throw new DOMException("The request was cancelled.", "AbortError");
+    }
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    if (signal?.aborted) {
+      throw new DOMException("The request was cancelled.", "AbortError");
+    }
+
+    const plainQuery: Record<string, string | number | boolean | undefined> = {};
+    for (const [key, value] of Object.entries(query ?? {})) {
+      if (value !== null && value !== undefined) plainQuery[key] = value;
+    }
+
+    try {
+      return demoRequest({ method, path, body, query: plainQuery }) as T;
+    } catch (error) {
+      if (error instanceof DemoRouteNotFound) {
+        // Surfaced as an API error so the screen's own error handling runs, which
+        // is what a participant would see against the real service.
+        throw new ApiError({
+          code: "NOT_FOUND",
+          message: `Demo data has nothing for ${method} ${path}. Add a handler so this screen can be reviewed.`,
+          status: 501,
+          requestId: "demo",
+        });
+      }
+      throw error;
+    }
+  }
+
   async request<T>(method: HttpMethod, path: string, options: RequestOptions = {}): Promise<T> {
     const { body, formData, query, signal, idempotencyKey } = options;
+
+    // Demo data answers here, before anything touches the network, so every screen
+    // is reachable without a database, a chain or a wallet. It is off by default
+    // and cannot be on in a production build without an explicit acknowledgement.
+    if (isDemoDataEnabled()) {
+      return (await this.fromDemoData<T>(method, path, body, query, signal)) as T;
+    }
+
     if (body !== undefined && formData !== undefined) {
       throw new Error(
         "ApiClient.request accepts either a JSON body or a FormData body, not both.",

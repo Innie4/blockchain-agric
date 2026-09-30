@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { LoadingState } from "../states/LoadingState";
 import { Icon } from "../ui/Icon";
 import { Footer } from "./Footer";
+import { DemoDataBanner } from "./DemoDataBanner";
 import { Nav } from "./Nav";
 import { NotificationBell } from "./NotificationBell";
 import { WalletButton } from "./WalletButton";
@@ -23,6 +24,8 @@ export function AppShell() {
       <a className="skip-link" href="#main-content">
         Skip to the main content
       </a>
+
+      <DemoDataBanner />
 
       <header className="app-header">
         <div className="container app-header__inner">

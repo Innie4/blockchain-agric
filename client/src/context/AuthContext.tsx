@@ -14,6 +14,8 @@ import { getNonce, getSession, logout, verifySignature } from "../api/endpoints"
 import type { AuthChallenge, Role, SessionState, User, VerifiedSignIn } from "../api/types";
 import { bytesToBase64, utf8ToBytes } from "../lib/bytes";
 import { useWalletState, walletErrorToApiError } from "./WalletContext";
+import { isDemoDataEnabled } from "../demo/mode";
+import { DEMO_USER } from "../demo/dataset";
 
 export type AuthStatus = "loading" | "authenticated" | "anonymous";
 
@@ -115,6 +117,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback(
     async (walletAddress?: string): Promise<VerifiedSignIn> => {
+      // Demo data has no wallet to sign with, and the point of the demonstration
+      // is to reach the screens behind sign-in. So a sign-in here opens the
+      // prepared session without asking anyone to sign anything. It is only
+      // reachable when demo data is on, and the interface says so on every screen.
+      if (isDemoDataEnabled()) {
+        const verified = (await verifySignature({
+          walletAddress: walletAddress ?? DEMO_USER.walletAddress,
+          nonce: "demo",
+          signature: "demo",
+        })) as VerifiedSignIn;
+        setUser(verified.user);
+        setStatus("authenticated");
+        setError(null);
+        return verified;
+      }
+
       const address = (walletAddress ?? publicKey ?? "").trim();
       if (address.length === 0) {
         const failure = new ApiError({

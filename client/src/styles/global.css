@@ -2075,3 +2075,48 @@ samp,
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * The demonstration notice
+ *
+ * Shown on every screen while placeholder data is in use. Deliberately plain and
+ * permanently placed rather than dismissible: a notice that can be closed is a
+ * notice that will be closed, and the one thing this must do is stop anyone
+ * reading a demonstration as the registry.
+ * ------------------------------------------------------------------ */
+.demo-banner {
+  background-color: var(--color-warning-soft);
+  border-bottom: 1px solid var(--color-warning);
+  color: var(--text-primary);
+}
+
+.demo-banner__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.demo-banner__title {
+  font-weight: 600;
+  color: var(--color-warning);
+  white-space: nowrap;
+}
+
+.demo-banner__body {
+  color: var(--text-secondary);
+  flex: 1 1 20rem;
+  min-width: 0;
+}
+
+.demo-banner__body code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  background-color: rgba(138, 90, 18, 0.12);
+  padding: 0 0.25em;
+  border-radius: 2px;
+}

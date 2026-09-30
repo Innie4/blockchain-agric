@@ -58,9 +58,16 @@ async function clientVariables() {
   const names = new Set();
   for (const file of await sourceFiles(clientDir)) {
     const source = await readFile(file, "utf8");
-    for (const match of source.matchAll(/import\.meta\.env\.([A-Z][A-Z0-9_]*)/g)) {
-      if (!BUILT_IN_CLIENT_VARIABLES.has(match[1])) names.add(match[1]);
-    }
+      for (const match of source.matchAll(/import\.meta\.env\.([A-Z][A-Z0-9_]*)/g)) {
+        if (!BUILT_IN_CLIENT_VARIABLES.has(match[1])) names.add(match[1]);
+      }
+      // The bracketed form, `import.meta.env["NAME"]`, is the same read and is
+      // what you get when the key is looked up defensively. Without this a
+      // variable read that way looks undocumented and unused, and the audit
+      // would send someone looking for a bug that is not there.
+      for (const match of source.matchAll(/import\.meta\.env\["([A-Z][A-Z0-9_]*)"\]/g)) {
+        if (!BUILT_IN_CLIENT_VARIABLES.has(match[1])) names.add(match[1]);
+      }
   }
   return names;
 }

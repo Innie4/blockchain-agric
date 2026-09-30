@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet } from "react-router-dom";
 import { CLUSTER_LABEL, SOLANA_CLUSTER } from "../../lib/solana";
 import { LoadingState } from "../states/LoadingState";
 import { Icon } from "../ui/Icon";
+import { DemoDataBanner } from "./DemoDataBanner";
 import { WalletButton } from "./WalletButton";
 
 const PUBLIC_LINKS: ReadonlyArray<{ to: string; label: string }> = [
@@ -24,6 +25,8 @@ export function PublicShell({ children }: { children?: ReactNode }) {
       <a className="skip-link" href="#main-content">
         Skip to the main content
       </a>
+
+      <DemoDataBanner />
 
       <header className="app-header">
         <div className="container app-header__inner">

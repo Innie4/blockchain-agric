@@ -33,6 +33,7 @@ Documentation:
 - [Environment](docs/environment.md) — every variable, and which side may see it.
 - [Testing](docs/testing.md) — what is covered, at what level, and how to run it.
 - [Deployment](docs/deployment.md) — what must exist before the API starts, and the checklist.
+- [Demo data](docs/demo-data.md) — run the whole interface on placeholder data, with no database or wallet.
 
 ## Requirements
 
