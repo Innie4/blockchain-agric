@@ -34,19 +34,6 @@ const WALLET = {
 } as const;
 
 /** Deterministic-looking signatures. They are not real, and nothing signs with them. */
-function signature(seed: string): string {
-  const alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-  let value = 0;
-  for (const character of seed) {
-    value = (value * 31 + character.charCodeAt(0)) % 1_000_000_007;
-  }
-  let output = "";
-  for (let index = 0; index < 88; index += 1) {
-    value = (value * 1_103_515_245 + 12_345) % 2_147_483_648;
-    output += alphabet[value % alphabet.length];
-  }
-  return output;
-}
 
 const programId = new PublicKey(FALLBACK_PROGRAM_ID);
 

@@ -34,9 +34,13 @@ Three things stop it being switched on by accident:
    conclusion from it. A notice that could be closed is a notice that will be
    closed.
 
-While demo data is on, the interface also says no wallet is needed rather than
-asking for an install, and sign-in opens a prepared session without asking anyone
-to sign anything.
+While demo data is on, the reviewer is treated as already signed in with a wallet
+connected. The first screen is the dashboard rather than a page asking them to be
+someone, the wallet shows the demonstration's own address, and the connect prompt
+is gone. None of that is a claim about a real session: there is no key, nothing
+signed, and the banner is still on every page saying the data is placeholder.
+
+The landing page has not been thrown away, it is at `/landing`.
 
 ## What the data is
 
@@ -120,13 +124,16 @@ VITE_DEMO_DATA=true npm run dev:client
 
 Then, in a browser:
 
-- `/` — the landing page, with the demonstration banner
+- `/` — the dashboard, the wallet already connected, the session already open
+- `/landing` — the landing page, still there to read
 - `/search` — search for `cocoa`, or `plantain`
 - `/verify/AGT-COCOA-2026-A1B2C3` — a batch that matches its record
 - `/verify/AGT-COCOA-2026-ZZZ999` — an identifier that is not registered
-- `/app/dashboard` — figures and a table, with no wallet connected
+- `/app/dashboard` — figures and a table
 - `/app/products/AGT-PLANTAIN-2026-F6G7H8` — the whole journey, and both fingerprints
 - `/app/products/AGT-PLANTAIN-2026-F6G7H8/history` — the timeline and its integrity
 
-The automated check that covers these lives with the end-to-end suite rather than
-here, so it runs in one place with everything else.
+These were checked in a real browser, ten assertions on rendered content rather
+than on the request succeeding, with the same check run against a build with demo
+data off to confirm it is inert there. That check is not yet part of the
+end-to-end suite; it needs to be, so this stays true when the routes move.

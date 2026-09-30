@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import { isDemoDataEnabled } from "../demo/mode";
 import { AppLayoutRoute, RequireRole, RouteErrorElement } from "../components/RouteGuards";
 import { PublicShell } from "../components/layout/PublicShell";
 
@@ -58,13 +59,20 @@ export const router = createBrowserRouter([
     errorElement: ERROR_ELEMENT,
     element: <PublicShell />,
     children: [
-      { path: "/", element: <LandingPage /> },
-      { path: "/verify", element: <VerifyLookupPage /> },
-      { path: "/verify/:productId", element: <VerifyResultPage /> },
-      { path: "/search", element: <SearchPage /> },
-      { path: "/connect", element: <ConnectWalletPage /> },
-      { path: "/error", element: <ErrorPage /> },
-      { path: "/auth/unsupported-wallet", element: <UnsupportedWalletPage /> },
+      // While placeholder data is in use the reviewer is treated as already
+      // signed in with a wallet connected, so the first thing they see is the
+      // product rather than a page asking them to be someone. The landing page
+      // stays reachable at /landing, because it is still worth reading.
+      isDemoDataEnabled()
+        ? { index: true, element: <Navigate to="/app/dashboard" replace /> }
+        : { index: true, element: <LandingPage /> },
+      { path: "landing", element: <LandingPage /> },
+      { path: "verify", element: <VerifyLookupPage /> },
+      { path: "verify/:productId", element: <VerifyResultPage /> },
+      { path: "search", element: <SearchPage /> },
+      { path: "connect", element: <ConnectWalletPage /> },
+      { path: "error", element: <ErrorPage /> },
+      { path: "auth/unsupported-wallet", element: <UnsupportedWalletPage /> },
     ],
   },
   {
