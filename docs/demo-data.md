@@ -1,4 +1,4 @@
-# Demonstration data
+﻿# Demonstration data
 
 The interface can run on placeholder data: no database, no chain connection and no
 wallet, with every screen populated. The point is to review the product on its own
@@ -11,23 +11,50 @@ It is not, and does not pretend to be, the real registry.
 
 ```bash
 # .env, or the environment the dev server is started with
-VITE_DEMO_DATA=true
+DEMO_DATA=true
 npm run dev:client
 ```
 
 Off by default, and read at build time, so a change means a rebuild rather than a
 restart.
 
+### On Vercel
+
+Two variables, in the dashboard under **Settings → Environment Variables**, for
+**both** Production and Preview if you want preview deployments to behave the same:
+
+| Variable | Value |
+| --- | --- |
+| `DEMO_DATA` | `true` |
+| `DEMO_DATA_ACK` | `I understand this is not real data` |
+
+Three things that catch people out here, all of which have happened:
+
+- **Both are required.** `DEMO_DATA` on its own does nothing on Vercel, because a
+  production build refuses fixtures without the acknowledgement as well.
+- **Adding a variable does not redeploy.** Vercel inlines these at build time, so
+  the old bundle keeps serving until you redeploy: **Deployments → ⋮ → Redeploy**.
+- **Vite only inlines the prefixes it is told about.** `DEMO_DATA` and
+  `DEMO_DATA_ACK` are listed in `envPrefix` in `client/vite.config.ts`. Without
+  that line they would read as `undefined` in the browser and the switch would look
+  broken while the dashboard insisted it was on.
+
+To confirm it took, open the deployed page. If you are still on a landing page with
+a "Connect wallet" button, the flag did not reach the build. The quickest way to
+see what Vercel actually inlined is to open the main bundle in the browser's
+sources and look for the object `import.meta.env` was replaced with: it will
+contain `DEMO_DATA`, and if it is `{}` then no variable was set at all.
+
 ## Turning it off, or being sure it is off
 
 Two things stop it being switched on by accident:
 
-1. It is off unless `VITE_DEMO_DATA` is exactly `true`.
+1. It is off unless `DEMO_DATA` is exactly `true`.
 2. **A production build ignores it.** The interface is compiled for production on
    Vercel with `import.meta.env.PROD` set, and demo mode refuses to run there. A
    public deployment cannot serve fixture data to a real consumer even if the flag
    is set. Overriding that needs a second, deliberately awkward acknowledgement:
-   `VITE_DEMO_DATA_ACK=I understand this is not real data`.
+   `DEMO_DATA_ACK=I understand this is not real data`.
 
 There is no third thing, deliberately. The interface does not say it is fixtures,
 because a review build that announces itself is not a review of the product. That
@@ -44,7 +71,7 @@ The interface does not label itself. There is no banner, no badge and no mention
 placeholder data anywhere in it, because the point of a review build is to look
 like the product. What stands behind that is the gate in `mode.ts`, not a notice
 on the screen: a production build answers from the API unless someone sets both
-`VITE_DEMO_DATA` and a second acknowledgement. If that ever needs changing, the
+`DEMO_DATA` and a second acknowledgement. If that ever needs changing, the
 banner is the wrong place to try.
 
 Requests are answered after a delay that stands in for the network, varied by what
@@ -139,7 +166,7 @@ exists to surface.
 ## Checking it
 
 ```bash
-VITE_DEMO_DATA=true npm run dev:client
+DEMO_DATA=true npm run dev:client
 ```
 
 Then, in a browser:

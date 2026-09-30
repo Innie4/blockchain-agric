@@ -53,7 +53,7 @@ function findRow(productId: string): DemoBatchRow | undefined {
  * A page of rows, in the shape the list screens expect.
  *
  * The key is named per endpoint, because the API names its lists after what they
- * list â€” `products`, `verifications`, `reports`, `transfers` â€” and the pages read
+ * list — `products`, `verifications`, `reports`, `transfers` — and the pages read
  * those names. A demonstration that used a single generic key would render an
  * empty table everywhere, which is the failure this is meant to avoid.
  */

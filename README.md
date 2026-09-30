@@ -1,4 +1,4 @@
-# AgriTrace
+﻿# AgriTrace
 
 A blockchain-based decentralised ecosystem for transparent agricultural supply
 chain management.

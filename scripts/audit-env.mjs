@@ -104,10 +104,15 @@ const [server, client, documented, required] = [
 ];
 
 const problems = [];
-const isClientSide = (name) => name.startsWith("VITE_");
+// The prefixes `client/vite.config.ts` declares in `envPrefix`. Anything Vite
+// inlines ends up in the browser bundle, so a name on this list is public and must
+// never be a secret, and a name off it that the browser reads is a bug: it will
+// read as `undefined` in the bundle however the host has configured it.
+const CLIENT_PREFIXES = ["VITE_", "DEMO_"];
+const isClientSide = (name) => CLIENT_PREFIXES.some((prefix) => name.startsWith(prefix));
 
-// A VITE_ variable read by the server would be embedded in the bundle; a
-// non-VITE_ variable read by the client would simply be undefined there.
+// A prefixed variable read by the server would be embedded in the bundle; a
+// non-prefixed variable read by the client would simply be undefined there.
 for (const name of server) {
   if (isClientSide(name)) {
     problems.push(`SERVER-SIDE SECRET: ${name} is read by the server but named as a browser variable.`);
@@ -115,7 +120,9 @@ for (const name of server) {
 }
 for (const name of client) {
   if (!isClientSide(name)) {
-    problems.push(`CLIENT MISSING PREFIX: ${name} is read by the client but is not prefixed VITE_.`);
+    problems.push(
+      `CLIENT MISSING PREFIX: ${name} is read by the client but carries none of ${CLIENT_PREFIXES.join(", ")}, so it will be undefined in the bundle.`,
+    );
   }
 }
 for (const name of [...server, ...client]) {

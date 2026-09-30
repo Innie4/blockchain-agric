@@ -17,6 +17,16 @@ const clientPort = Number.parseInt(process.env["CLIENT_PORT"] ?? "", 10);
 
 export default defineConfig({
   plugins: [react()],
+  // Vite only exposes variables to the browser bundle when they carry one of
+  // these prefixes, and everything it exposes is public. The default is just
+  // `VITE_`; `DEMO_` is added so the fixture switch can be named for what it is
+  // rather than for the tool that reads it.
+  //
+  // These are build-time switches, not secrets: one says "answer from fixtures",
+  // the other says "I understand this is not real data". Neither is sensitive, and
+  // both have to be readable by the browser, because the browser is the thing
+  // deciding whether to call the API at all.
+  envPrefix: ["VITE_", "DEMO_"],
   server: {
     port: Number.isInteger(clientPort) ? clientPort : 5173,
     strictPort: false,

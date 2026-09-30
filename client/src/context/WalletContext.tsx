@@ -548,7 +548,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   // While fixture data is in use there is no wallet to find, so the wallet is
   // reported as already connected to the prepared address. This is strictly a
-  // fixture affordance: it needs `VITE_DEMO_DATA` on, and `mode.ts` refuses that
+  // fixture affordance: it needs `DEMO_DATA` on, and `mode.ts` refuses that
   // in a production build without an explicit acknowledgement. A real deployment
   // still requires a real signature, because nothing here is reachable unless the
   // flag is set.
